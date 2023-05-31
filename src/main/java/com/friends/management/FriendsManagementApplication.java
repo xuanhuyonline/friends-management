@@ -7,9 +7,9 @@ import org.springframework.context.annotation.ComponentScan;
 @SpringBootApplication
 public class FriendsManagementApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(FriendsManagementApplication.class, args);
-		System.out.println("hello");
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(FriendsManagementApplication.class, args);
+        System.out.println("hello");
+    }
 
 }
