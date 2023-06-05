@@ -28,4 +28,27 @@ public class FriendController {
         }
     }
 
+    @GetMapping("/list")
+    public ApiResponse getFriendsList(@RequestParam("email") String email){
+        try {
+            //ApiResponse apiResponse = friendService.getFriendsList(email);
+            //return ResponseEntity.ok(apiResponse).getBody();
+            return friendService.getFriendsList(email);
+        }catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponse(false, e.getMessage())).getBody();
+        } catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, "An error occurred")).getBody();
+        }
+    }
+    @GetMapping("/common-friends")
+    public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequestDto requestDto){
+        try {
+            return friendService.getCommonFriends(requestDto.getFriends());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, e.getMessage())).getBody();
+        }
+    }
+
 }
