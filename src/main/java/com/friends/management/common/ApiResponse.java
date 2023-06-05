@@ -17,7 +17,7 @@ public class ApiResponse {
     private boolean success;
     private String message;
     private List<String> friends;
-    private int count;
+    private Integer count;
 
     public ApiResponse(boolean success) {
         this.success = success;
