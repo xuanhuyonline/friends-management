@@ -21,7 +21,7 @@ public class FriendService implements IFriendService{
 
     @Override
     @Transactional
-    public void createFriendConnection(List<String> friends) {
+    public ApiResponse createFriendConnection(List<String> friends) {
         if (friends.size() != 2) {
             throw new IllegalArgumentException("Exactly two email addresses are required");
         }
@@ -29,23 +29,17 @@ public class FriendService implements IFriendService{
         User user1 = userRepository.findByEmail(friends.get(0));
         User user2 = userRepository.findByEmail(friends.get(1));
 
-        if(user1 == user2){
-            throw new IllegalArgumentException("Two emails cannot be the same");
-        }
-
         if (user1 == null || user2 == null){
             throw new IllegalArgumentException("One or both email addresses do not exist");
+        }
+
+        if(user1 == user2){
+            throw new IllegalArgumentException("Two emails cannot be the same");
         }
 
         if (userRepository.areFriends(user1.getId(), user2.getId())) {
             throw new IllegalArgumentException("Friend connection already exists");
         }
-
-//        Friend friend = new Friend();
-//        friend.setUser(new User(user1.getId()));
-//        friend.setFriend(new User(user2.getId()));
-//        friend.setStatus(FriendStatus.FRIEND);
-//        friendRepository.save(friend);
 
         List<Friend> myFriends = new ArrayList<>();
 
@@ -57,7 +51,7 @@ public class FriendService implements IFriendService{
 
         friendRepository.saveAll(myFriends);
 
-
+        return new ApiResponse(true);
     }
 
     @Override

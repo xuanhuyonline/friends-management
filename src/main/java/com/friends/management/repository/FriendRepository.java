@@ -3,9 +3,11 @@ package com.friends.management.repository;
 import com.friends.management.entity.Friend;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query(value = "SELECT Users.email FROM Friends JOIN Users ON Friends.friend_id = Users.id WHERE Friends.user_id = :userId and friends.status = 'FRIEND'", nativeQuery = true)
     List<String> findFriendsByEmail(Long userId);
