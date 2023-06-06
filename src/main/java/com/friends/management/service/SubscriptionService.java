@@ -21,22 +21,22 @@ public class SubscriptionService implements ISubscriptionService {
     @Override
     public ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto) {
 
-        User user1 = userRepository.findByEmail(requestDto.getRequestor());
-        User user2 = userRepository.findByEmail(requestDto.getTarget());
+        User requestor = userRepository.findByEmail(requestDto.getRequestor());
+        User target = userRepository.findByEmail(requestDto.getTarget());
 
-        if(user1 == null || user2 == null){
+        if(requestor == null || target == null){
             throw new IllegalArgumentException("One or both email addresses do not exist");
         }
 
-        if(user1 == user2){
+        if(requestor == target){
             throw new IllegalArgumentException("Two emails cannot be the same");
         }
 
-        if(subscriptionRepository.receivedUpdate(user1.getId(), user2.getId())){
+        if(subscriptionRepository.receivedUpdate(requestor.getId(), target.getId())){
             throw new IllegalArgumentException("Subscription for updates already exists");
         }
 
-        Subscription subscription = new Subscription(user1, user2);
+        Subscription subscription = new Subscription(requestor, target);
         subscriptionRepository.save(subscription);
 
         return new ApiResponse(true);

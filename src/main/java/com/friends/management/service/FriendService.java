@@ -2,6 +2,7 @@ package com.friends.management.service;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendStatus;
+import com.friends.management.dto.SubscriptionRequestDto;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
 import com.friends.management.repository.FriendRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -89,6 +91,29 @@ public class FriendService implements IFriendService{
         int count = commonFriends.size();
         return new ApiResponse(true,commonFriends,count);
     }
+
+    @Override
+    public ApiResponse blockUpdate(SubscriptionRequestDto requestDto){
+        User requestor = userRepository.findByEmail(requestDto.getRequestor());
+        User target = userRepository.findByEmail(requestDto.getTarget());
+
+        if(requestor == null || target == null){
+            throw new IllegalArgumentException("One or both email addresses do not exist");
+        }
+
+        if(requestor == target){
+            throw new IllegalArgumentException("Two emails cannot be the same");
+        }
+
+        String checkFriendStatus = friendRepository.checkFriendStatus(requestor.getId(), target.getId());
+
+        if(checkFriendStatus.compareTo(FriendStatus.FRIEND.toString())==0) {
+
+        }
+        return null;
+    }
+
+
 
 
 }

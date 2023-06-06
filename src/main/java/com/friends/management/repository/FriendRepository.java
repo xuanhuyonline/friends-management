@@ -14,4 +14,9 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
 
     @Query(value = "SELECT u.email FROM users u JOIN friends f1 ON u.id = f1.user_id JOIN friends f2 ON u.id = f2.friend_id JOIN users u1 ON f1.friend_id = u1.id JOIN users u2 ON f2.user_id = u2.id WHERE u1.id = :userId1 AND u2.id = :userId2",nativeQuery = true)
     List<String> findCommonEmails(Long userId1, Long userId2);
+
+    @Query("select f.status from Friend f where f.user.id =:userId1 and f.friend.id = :userId2")
+    String checkFriendStatus(Long userId1, Long userId2);
+
+
 }
