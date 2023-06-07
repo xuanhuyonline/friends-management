@@ -19,6 +19,7 @@ public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    private Boolean subscriber;
 
     @ManyToOne
     @JoinColumn(name = "userId")
@@ -35,6 +36,13 @@ public class Friend {
         this.user = user;
         this.friend = friend;
         this.status = status;
+    }
+
+    public Friend(User user, User friend, FriendStatus status, Boolean subscriber) {
+        this.user = user;
+        this.friend = friend;
+        this.status = status;
+        this.subscriber = subscriber;
     }
 
 

@@ -5,13 +5,14 @@ import lombok.Setter;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Getter
 @Setter
 public class FriendRequestDto {
 
-    @NotBlank(message = "friends are required")
+    @NotNull(message = "friends are required")
     //@Email(message = "Email is invalid")
     private List<String> friends;
 }

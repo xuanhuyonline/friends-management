@@ -9,5 +9,6 @@ public interface IFriendService {
     ApiResponse createFriendConnection(List<String> friends);
     ApiResponse getFriendsList(String email);
     ApiResponse getCommonFriends(List<String> friends);
+    ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto);
     ApiResponse blockUpdate(SubscriptionRequestDto requestDto);
 }

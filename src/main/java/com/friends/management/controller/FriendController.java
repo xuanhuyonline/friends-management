@@ -2,6 +2,7 @@ package com.friends.management.controller;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendRequestDto;
+import com.friends.management.dto.SubscriptionRequestDto;
 import com.friends.management.service.FriendService;
 import com.friends.management.service.IFriendService;
 import lombok.RequiredArgsConstructor;
@@ -38,10 +39,31 @@ public class FriendController {
                     .body(new ApiResponse(false, "An error occurred")).getBody();
         }
     }
+
+    @PostMapping("/subscription")
+    public ApiResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequestDto requestDto){
+        try {
+            return friendService.createUpdateSubscription(requestDto);
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, e.getMessage())).getBody();
+        }
+    }
+
     @GetMapping("/common-friends")
     public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequestDto requestDto){
         try {
             return friendService.getCommonFriends(requestDto.getFriends());
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ApiResponse(false, e.getMessage())).getBody();
+        }
+    }
+
+    @PostMapping("/block")
+    public ApiResponse blockUpdate(@RequestBody @Valid SubscriptionRequestDto requestDto){
+        try {
+            return friendService.blockUpdate(requestDto);
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(new ApiResponse(false, e.getMessage())).getBody();
