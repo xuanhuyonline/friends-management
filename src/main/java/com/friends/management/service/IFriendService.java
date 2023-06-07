@@ -7,8 +7,12 @@ import java.util.List;
 
 public interface IFriendService {
     ApiResponse createFriendConnection(List<String> friends);
-    ApiResponse getFriendsList(String email);
+
+    ApiResponse findFriendByEmail(String email);
+
     ApiResponse getCommonFriends(List<String> friends);
+
     ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto);
-    ApiResponse blockUpdate(SubscriptionRequestDto requestDto);
+
+    ApiResponse blockFriend(SubscriptionRequestDto requestDto);
 }
