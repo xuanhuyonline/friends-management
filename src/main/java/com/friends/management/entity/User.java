@@ -15,11 +15,14 @@ import java.util.List;
 @NoArgsConstructor
 @Table(name = "users")
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String email;
+
+    public User(Long id) {
+        this.id = id;
+    }
 
 
 }
