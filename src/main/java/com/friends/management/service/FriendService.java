@@ -58,39 +58,51 @@ public class FriendService implements IFriendService {
     }
 
     private void updateRelationship(Long userId1, Long userId2, String post, Friend friendStatus, Friend friend) {
-        if (post.equals(FriendStatus.FRIEND.toString())) {
-            //update: status is Subscriber
-
-            populateFriend(friend, userId1, userId2, FriendStatus.FRIEND, friendStatus.getSubscriber());
-        } else if (post.equals(FriendStatus.RECEIVE_UPDATE.toString())) {
-            //update: status receive update
-
-            populateFriend(friend, userId1, userId2, friendStatus.getStatus(), true);
-        } else if (post.equals(FriendStatus.BLOCK.toString())) {
-            //update: status Block
-
-            populateFriend(friend, userId1, userId2, FriendStatus.BLOCK, false);
+        FriendStatus status;
+        switch (post) {
+            case "FRIEND":
+                //update: status is Subscriber
+                status = FriendStatus.FRIEND;
+                populateFriend(friend, userId1, userId2, status, friendStatus.getSubscriber());
+                break;
+            case "RECEIVE_UPDATE":
+                //update: status receive update
+                populateFriend(friend, userId1, userId2, friendStatus.getStatus(), true);
+                break;
+            case "BLOCK":
+                //update: status Block
+                status = FriendStatus.BLOCK;
+                populateFriend(friend, userId1, userId2, status, false);
+                break;
         }
         friendRepository.save(friend);
     }
 
-    private void populateFriend(Friend friend, Long userId1, Long userId2, FriendStatus friend1, Boolean friendStatus) {
+    private void populateFriend(Friend friend, Long userId1, Long userId2, FriendStatus status, Boolean subscriber) {
         friend.setUser(new User(userId1));
         friend.setFriend(new User(userId2));
-        friend.setStatus(friend1);
-        friend.setSubscriber(friendStatus);
+        friend.setStatus(status);
+        friend.setSubscriber(subscriber);
     }
 
     private void addRelationship(Long userId1, Long userId2, String post) {
-        if (post.equals(FriendStatus.FRIEND.toString())) {
-            //create new friend connection
-            createFriend(userId1, userId2, FriendStatus.FRIEND, false);
-        } else if (post.equals(FriendStatus.RECEIVE_UPDATE.toString())) {
-            //create new receive update
-            createFriend(userId1, userId2, FriendStatus.NO_RELATIONSHIP, true);
-        } else if (post.equals(FriendStatus.BLOCK.toString())) {
-            //create new block
-            createFriend(userId1, userId2, FriendStatus.BLOCK, false);
+        FriendStatus status;
+        switch (post) {
+            case "FRIEND":
+                //create new friend connection
+                status = FriendStatus.FRIEND;
+                createFriend(userId1, userId2, status, false);
+                break;
+            case "RECEIVE_UPDATE":
+                //create new receive update
+                status = FriendStatus.NO_RELATIONSHIP;
+                createFriend(userId1, userId2, status, true);
+                break;
+            case "BLOCK":
+                //create new block
+                status = FriendStatus.BLOCK;
+                createFriend(userId1, userId2, status, false);
+                break;
         }
     }
 
