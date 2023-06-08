@@ -2,6 +2,7 @@ package com.friends.management.service;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendStatus;
+import com.friends.management.dto.SenderRequestDto;
 import com.friends.management.dto.SubscriptionRequestDto;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
@@ -12,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +22,14 @@ public class FriendService implements IFriendService {
     private final UserRepository userRepository;
     private final FriendRepository friendRepository;
 
+    //Questions 1
     @Override
     @Transactional
     public ApiResponse createFriendConnection(List<String> friends) {
+        if ((!isValidEmail(friends.get(0))) || (!isValidEmail(friends.get(1)))){
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
         if (friends.size() != 2) {
             throw new IllegalArgumentException("Exactly two email addresses are required");
         }
@@ -121,13 +129,20 @@ public class FriendService implements IFriendService {
         }
     }
 
+    //Questions 2
     @Override
     public ApiResponse findFriendByEmail(String email) {
+        if (email.isEmpty()){
+            throw new IllegalArgumentException("Email cannot be empty");
+        }
+
+        if (!isValidEmail(email)){
+            throw new IllegalArgumentException("Invalid email format");
+        }
+
         User user = userRepository.findByEmail(email);
 
-        if (user == null) {
-            throw new IllegalArgumentException("Email address does not exist");
-        }
+        checkUsersEmail(user);
 
         List<String> friends = friendRepository.findFriendByEmail(user.getId());
         int count = friends.size();
@@ -135,6 +150,7 @@ public class FriendService implements IFriendService {
         return new ApiResponse(true, friends, count);
     }
 
+    //Questions 3
     @Override
     public ApiResponse getCommonFriends(List<String> friends) {
         if (friends.size() != 2) {
@@ -151,6 +167,7 @@ public class FriendService implements IFriendService {
         return new ApiResponse(true, commonFriends, count);
     }
 
+    //Questions 4
     @Transactional
     @Override
     public ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto) {
@@ -168,6 +185,7 @@ public class FriendService implements IFriendService {
         return new ApiResponse(true);
     }
 
+    //Questions 5
     @Transactional
     @Override
     public ApiResponse blockFriend(SubscriptionRequestDto requestDto) {
@@ -182,6 +200,44 @@ public class FriendService implements IFriendService {
         createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.BLOCK.toString());
         createOrUpdateRelationShip(target.getId(), requestor.getId(), FriendStatus.BLOCK.toString());
         return new ApiResponse(true);
+    }
+
+    //Questions 6
+    @Override
+    public ApiResponse findFriendSubscribedByEmail(SenderRequestDto requestDto) {
+        User user = userRepository.findByEmail(requestDto.getSender());
+
+        checkUsersEmail(user);
+
+        List<String> recipients = friendRepository.findFriendSubscribedByEmail(user.getId());
+
+        emailExtractor(requestDto, recipients);
+
+        return new ApiResponse(true, recipients);
+    }
+
+    private void emailExtractor(SenderRequestDto requestDto, List<String> recipients) {
+        String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
+
+        String text = requestDto.getText();
+        Pattern pattern = Pattern.compile(regex);
+        Matcher matcher = pattern.matcher(text);
+
+        while (matcher.find()) {
+            String email = matcher.group();
+            recipients.add(email);
+        }
+    }
+
+    private void checkUsersEmail(User user) {
+        if (user == null) {
+            throw new IllegalArgumentException("Email address does not exist");
+        }
+    }
+
+    private boolean isValidEmail(String email) {
+        String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
+        return email.matches(regex);
     }
 
 }
