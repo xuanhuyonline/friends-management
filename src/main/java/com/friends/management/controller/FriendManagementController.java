@@ -2,6 +2,7 @@ package com.friends.management.controller;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendRequestDto;
+import com.friends.management.dto.SenderRequestDto;
 import com.friends.management.dto.SubscriptionRequestDto;
 import com.friends.management.service.IFriendService;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +39,11 @@ public class FriendManagementController {
     @PostMapping("/block")
     public ApiResponse blockFriend(@RequestBody @Valid SubscriptionRequestDto requestDto) {
         return friendService.blockFriend(requestDto);
+    }
+
+    @GetMapping("/friend-Subscribed")
+    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequestDto requestDto){
+        return friendService.findFriendSubscribedByEmail(requestDto);
     }
 
 }

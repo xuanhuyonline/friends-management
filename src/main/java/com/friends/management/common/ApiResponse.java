@@ -18,6 +18,7 @@ public class ApiResponse {
     private String message;
     private List<String> friends;
     private Integer count;
+    private List<String> recipients;
 
     public ApiResponse(boolean success) {
         this.success = success;
@@ -26,6 +27,11 @@ public class ApiResponse {
     public ApiResponse(boolean success, String message) {
         this.success = success;
         this.message = message;
+    }
+
+    public ApiResponse(boolean success, List<String> recipients) {
+        this.success = success;
+        this.recipients = recipients;
     }
 
     public ApiResponse(boolean success, List<String> friends, Integer count) {

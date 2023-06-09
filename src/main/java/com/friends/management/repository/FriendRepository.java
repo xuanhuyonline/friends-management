@@ -15,16 +15,16 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
             "or (f.friend.id = :userId1 and f.user.id = :userId2 and f.status = 'FRIEND')")
     boolean areFriends(Long userId1, Long userId2);
 
-    @Query(value = "SELECT Users.email FROM Friends JOIN Users ON Friends.friend_id = Users.id " +
-            "WHERE Friends.user_id = :userId and friends.status = 'FRIEND'", nativeQuery = true)
+    @Query("select u.email from Friend f join User u on f.friend.id = u.id " +
+            "where f.user.id = :userId and f.status = 'FRIEND'")
     List<String> findFriendByEmail(Long userId);
 
-    @Query(value = "SELECT u.email FROM users u " +
-            "JOIN friends f1 ON u.id = f1.user_id " +
-            "JOIN friends f2 ON u.id = f2.friend_id " +
-            "JOIN users u1 ON f1.friend_id = u1.id " +
-            "JOIN users u2 ON f2.user_id = u2.id " +
-            "WHERE u1.id = :userId1 AND u2.id = :userId2", nativeQuery = true)
+    @Query("select u.email from User u " +
+            "join Friend f1 on u.id = f1.user.id " +
+            "join Friend f2 on u.id = f2.friend.id " +
+            "join User u1 on f1.friend.id = u1.id " +
+            "join User u2 on f2.user.id =u2.id " +
+            "where  u1.id = :userId1 and u2.id = :userId2 and f1.status = 'FRIEND' and f2.status = 'FRIEND'")
     List<String> findCommonEmails(Long userId1, Long userId2);
 
     @Query("select f from Friend f " +
@@ -36,8 +36,14 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     boolean receivedUpdate(Long userId1, Long userId2);
 
     @Query("select count(f) > 0 from Friend  f " +
-            "where (f.user.id = :userId1 and f.friend.id = :userId2 and f.status = 'BLOCK') or (f.friend.id = :userId1 and f.user.id = :userId2 and f.status = 'BLOCK')")
+            "where (f.user.id = :userId1 and f.friend.id = :userId2 and f.status = 'BLOCK') " +
+            "or (f.friend.id = :userId1 and f.user.id = :userId2 and f.status = 'BLOCK')")
     boolean blockedEachOther(Long userId1, Long userId2);
+
+    @Query("select u.email from Friend f " +
+            "join User u on f.user.id = u.id " +
+            "where f.friend.id = :userId and f.status = 'FRIEND' and f.subscriber = true ")
+    List<String> findFriendSubscribedByEmail(Long userId);
 
 
 }
