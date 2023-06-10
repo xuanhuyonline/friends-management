@@ -9,7 +9,6 @@ public class FriendsManagementApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(FriendsManagementApplication.class, args);
-        System.out.println("hello");
     }
 
 }

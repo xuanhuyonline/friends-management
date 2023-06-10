@@ -1,9 +1,9 @@
 package com.friends.management.controller;
 
 import com.friends.management.common.ApiResponse;
-import com.friends.management.dto.FriendRequestDto;
-import com.friends.management.dto.SenderRequestDto;
-import com.friends.management.dto.SubscriptionRequestDto;
+import com.friends.management.dto.FriendRequest;
+import com.friends.management.dto.SenderRequest;
+import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.service.IFriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +17,8 @@ public class FriendManagementController {
     private final IFriendService friendService;
 
     @PostMapping
-    public ApiResponse createFriendsConnection(@RequestBody @Valid FriendRequestDto requestDto) {
-            return friendService.createFriendConnection(requestDto.getFriends());
+    public ApiResponse createFriendsConnection(@RequestBody @Valid FriendRequest request) {
+            return friendService.createFriendConnection(request.getFriends());
     }
 
     @GetMapping
@@ -27,23 +27,23 @@ public class FriendManagementController {
     }
 
     @PostMapping("/subscription")
-    public ApiResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequestDto requestDto) {
-        return friendService.createUpdateSubscription(requestDto);
+    public ApiResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequest request) {
+        return friendService.createUpdateSubscription(request);
     }
 
     @GetMapping("/common-friends")
-    public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequestDto requestDto) {
-        return friendService.getCommonFriends(requestDto.getFriends());
+    public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequest request) {
+        return friendService.getCommonFriends(request.getFriends());
     }
 
     @PostMapping("/block")
-    public ApiResponse blockFriend(@RequestBody @Valid SubscriptionRequestDto requestDto) {
-        return friendService.blockFriend(requestDto);
+    public ApiResponse blockFriend(@RequestBody @Valid SubscriptionRequest request) {
+        return friendService.blockFriend(request);
     }
 
     @GetMapping("/friend-Subscribed")
-    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequestDto requestDto){
-        return friendService.findFriendSubscribedByEmail(requestDto);
+    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequest request){
+        return friendService.findFriendSubscribedByEmail(request);
     }
 
 }

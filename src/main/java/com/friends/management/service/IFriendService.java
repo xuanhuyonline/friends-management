@@ -1,8 +1,8 @@
 package com.friends.management.service;
 
 import com.friends.management.common.ApiResponse;
-import com.friends.management.dto.SenderRequestDto;
-import com.friends.management.dto.SubscriptionRequestDto;
+import com.friends.management.dto.SenderRequest;
+import com.friends.management.dto.SubscriptionRequest;
 
 import java.util.List;
 
@@ -13,9 +13,9 @@ public interface IFriendService {
 
     ApiResponse getCommonFriends(List<String> friends);
 
-    ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto);
+    ApiResponse createUpdateSubscription(SubscriptionRequest requestDto);
 
-    ApiResponse blockFriend(SubscriptionRequestDto requestDto);
+    ApiResponse blockFriend(SubscriptionRequest requestDto);
 
-    ApiResponse findFriendSubscribedByEmail(SenderRequestDto requestDto);
+    ApiResponse findFriendSubscribedByEmail(SenderRequest requestDto);
 }

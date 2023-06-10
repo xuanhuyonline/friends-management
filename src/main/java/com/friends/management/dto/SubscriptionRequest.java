@@ -10,7 +10,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @AllArgsConstructor
-public class SubscriptionRequestDto {
+public class SubscriptionRequest {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email cannot be empty")
     private String requestor;
