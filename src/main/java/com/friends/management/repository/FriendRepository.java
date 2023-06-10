@@ -19,12 +19,10 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
             "where f.user.id = :userId and f.status = 'FRIEND'")
     List<String> findFriendByEmail(Long userId);
 
-    @Query("select u.email from User u " +
-            "join Friend f1 on u.id = f1.user.id " +
-            "join Friend f2 on u.id = f2.friend.id " +
-            "join User u1 on f1.friend.id = u1.id " +
-            "join User u2 on f2.user.id =u2.id " +
-            "where  u1.id = :userId1 and u2.id = :userId2 and f1.status = 'FRIEND' and f2.status = 'FRIEND'")
+    @Query("select u.email from User u join Friend f on u.id = f.user.id " +
+            "where (f.friend.id = :userId1 or f.friend.id = :userId2) and f.status = 'FRIEND' " +
+            "group by u.email " +
+            "having count(u.email) >1")
     List<String> findCommonEmails(Long userId1, Long userId2);
 
     @Query("select f from Friend f " +

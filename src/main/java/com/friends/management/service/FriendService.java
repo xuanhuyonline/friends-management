@@ -2,19 +2,23 @@ package com.friends.management.service;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendStatus;
-import com.friends.management.dto.SenderRequestDto;
-import com.friends.management.dto.SubscriptionRequestDto;
+import com.friends.management.dto.SenderRequest;
+import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
+import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.FriendRepository;
 import com.friends.management.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.friends.management.utils.Utils.isValidEmail;
 
 @Service
 @RequiredArgsConstructor
@@ -26,12 +30,12 @@ public class FriendService implements IFriendService {
     @Override
     @Transactional
     public ApiResponse createFriendConnection(List<String> friends) {
-        if ((!isValidEmail(friends.get(0))) || (!isValidEmail(friends.get(1)))){
-            throw new IllegalArgumentException("Invalid email format");
+        if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
+            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
 
         if (friends.size() != 2) {
-            throw new IllegalArgumentException("Exactly two email addresses are required");
+            throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
         }
 
         User user1 = userRepository.findByEmail(friends.get(0));
@@ -40,46 +44,41 @@ public class FriendService implements IFriendService {
         checkUsersEmail(user1, user2);
 
         if (friendRepository.areFriends(user1.getId(), user2.getId())) {
-            throw new IllegalArgumentException("Friend connection already exists");
+            throw new ApplicationException("Friend connection already exists", HttpStatus.BAD_REQUEST.value());
         }
 
-        createOrUpdateRelationShip(user1.getId(), user2.getId(), FriendStatus.FRIEND.toString());
-        createOrUpdateRelationShip(user2.getId(), user1.getId(), FriendStatus.FRIEND.toString());
+        createOrUpdateRelationShip(user1.getId(), user2.getId(), FriendStatus.FRIEND);
+        createOrUpdateRelationShip(user2.getId(), user1.getId(), FriendStatus.FRIEND);
         return new ApiResponse(true);
     }
 
-    private void createOrUpdateRelationShip(Long userId1, Long userId2, String post) {
-        Friend friendStatus = friendRepository.friendStatus(userId1, userId2);
+    private void createOrUpdateRelationShip(Long userId1, Long userId2, FriendStatus status) {
+        Friend friend = friendRepository.friendStatus(userId1, userId2);
 
-        if (friendStatus == null) {
-            addRelationship(userId1, userId2, post);
+        if (friend == null) {
+            addRelationship(userId1, userId2, status);
         } else {
             //check block
-            if (friendStatus.getStatus().equals(FriendStatus.BLOCK)) {
-                throw new IllegalArgumentException("Two users have blocked each other");
+            if (friend.getStatus().equals(FriendStatus.BLOCK)) {
+                throw new ApplicationException("Two users have blocked each other", HttpStatus.BAD_REQUEST.value());
             }
 
-            Friend friend = friendRepository.findById(friendStatus.getId()).orElseThrow();
-
-            updateRelationship(userId1, userId2, post, friendStatus, friend);
+            updateRelationship(userId1, userId2, status, friend);
         }
     }
 
-    private void updateRelationship(Long userId1, Long userId2, String post, Friend friendStatus, Friend friend) {
-        FriendStatus status;
-        switch (post) {
-            case "FRIEND":
+    private void updateRelationship(Long userId1, Long userId2, FriendStatus status, Friend friend) {
+        switch (status) {
+            case FRIEND:
                 //update: status is Subscriber
-                status = FriendStatus.FRIEND;
-                populateFriend(friend, userId1, userId2, status, friendStatus.getSubscriber());
+                populateFriend(friend, userId1, userId2, status, friend.getSubscriber());
                 break;
-            case "RECEIVE_UPDATE":
+            case RECEIVE_UPDATE:
                 //update: status receive update
-                populateFriend(friend, userId1, userId2, friendStatus.getStatus(), true);
+                populateFriend(friend, userId1, userId2, friend.getStatus(), true);
                 break;
-            case "BLOCK":
+            case BLOCK:
                 //update: status Block
-                status = FriendStatus.BLOCK;
                 populateFriend(friend, userId1, userId2, status, false);
                 break;
         }
@@ -93,22 +92,18 @@ public class FriendService implements IFriendService {
         friend.setSubscriber(subscriber);
     }
 
-    private void addRelationship(Long userId1, Long userId2, String post) {
-        FriendStatus status;
-        switch (post) {
-            case "FRIEND":
+    private void addRelationship(Long userId1, Long userId2, FriendStatus status) {
+        switch (status) {
+            case FRIEND:
                 //create new friend connection
-                status = FriendStatus.FRIEND;
                 createFriend(userId1, userId2, status, false);
                 break;
-            case "RECEIVE_UPDATE":
+            case RECEIVE_UPDATE:
                 //create new receive update
-                status = FriendStatus.NO_RELATIONSHIP;
-                createFriend(userId1, userId2, status, true);
+                createFriend(userId1, userId2, FriendStatus.NO_RELATIONSHIP, true);
                 break;
-            case "BLOCK":
+            case BLOCK:
                 //create new block
-                status = FriendStatus.BLOCK;
                 createFriend(userId1, userId2, status, false);
                 break;
         }
@@ -121,23 +116,19 @@ public class FriendService implements IFriendService {
 
     private void checkUsersEmail(User user1, User user2) {
         if (user1 == null || user2 == null) {
-            throw new IllegalArgumentException("One or both email addresses do not exist");
+            throw new ApplicationException("One or both email addresses do not exist", HttpStatus.BAD_REQUEST.value());
         }
 
         if (user1 == user2) {
-            throw new IllegalArgumentException("Two emails cannot be the same");
+            throw new ApplicationException("Two emails cannot be the same", HttpStatus.BAD_REQUEST.value());
         }
     }
 
     //Questions 2
     @Override
     public ApiResponse findFriendByEmail(String email) {
-        if (email.isEmpty()){
-            throw new IllegalArgumentException("Email cannot be empty");
-        }
-
-        if (!isValidEmail(email)){
-            throw new IllegalArgumentException("Invalid email format");
+        if (!isValidEmail(email)) {
+            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
 
         User user = userRepository.findByEmail(email);
@@ -154,7 +145,7 @@ public class FriendService implements IFriendService {
     @Override
     public ApiResponse getCommonFriends(List<String> friends) {
         if (friends.size() != 2) {
-            throw new IllegalArgumentException("Exactly two email addresses are required");
+            throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
         }
 
         User user1 = userRepository.findByEmail(friends.get(0));
@@ -170,7 +161,7 @@ public class FriendService implements IFriendService {
     //Questions 4
     @Transactional
     @Override
-    public ApiResponse createUpdateSubscription(SubscriptionRequestDto requestDto) {
+    public ApiResponse createUpdateSubscription(SubscriptionRequest requestDto) {
 
         User requestor = userRepository.findByEmail(requestDto.getRequestor());
         User target = userRepository.findByEmail(requestDto.getTarget());
@@ -178,33 +169,33 @@ public class FriendService implements IFriendService {
         checkUsersEmail(requestor, target);
 
         if (friendRepository.receivedUpdate(requestor.getId(), target.getId())) {
-            throw new IllegalArgumentException("Subscription for updates already exists");
+            throw new ApplicationException("Subscription for updates already exists", HttpStatus.BAD_REQUEST.value());
         }
 
-        createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.RECEIVE_UPDATE.toString());
+        createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.RECEIVE_UPDATE);
         return new ApiResponse(true);
     }
 
     //Questions 5
     @Transactional
     @Override
-    public ApiResponse blockFriend(SubscriptionRequestDto requestDto) {
+    public ApiResponse blockFriend(SubscriptionRequest requestDto) {
         User requestor = userRepository.findByEmail(requestDto.getRequestor());
         User target = userRepository.findByEmail(requestDto.getTarget());
 
         checkUsersEmail(requestor, target);
 
         if (friendRepository.blockedEachOther(requestor.getId(), target.getId())) {
-            throw new IllegalArgumentException("Two users have blocked each other");
+            throw new ApplicationException("Two users have blocked each other", HttpStatus.BAD_REQUEST.value());
         }
-        createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.BLOCK.toString());
-        createOrUpdateRelationShip(target.getId(), requestor.getId(), FriendStatus.BLOCK.toString());
+        createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.BLOCK);
+        createOrUpdateRelationShip(target.getId(), requestor.getId(), FriendStatus.BLOCK);
         return new ApiResponse(true);
     }
 
     //Questions 6
     @Override
-    public ApiResponse findFriendSubscribedByEmail(SenderRequestDto requestDto) {
+    public ApiResponse findFriendSubscribedByEmail(SenderRequest requestDto) {
         User user = userRepository.findByEmail(requestDto.getSender());
 
         checkUsersEmail(user);
@@ -216,7 +207,7 @@ public class FriendService implements IFriendService {
         return new ApiResponse(true, recipients);
     }
 
-    private void emailExtractor(SenderRequestDto requestDto, List<String> recipients) {
+    private void emailExtractor(SenderRequest requestDto, List<String> recipients) {
         String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
         String text = requestDto.getText();
@@ -231,13 +222,8 @@ public class FriendService implements IFriendService {
 
     private void checkUsersEmail(User user) {
         if (user == null) {
-            throw new IllegalArgumentException("Email address does not exist");
+            throw new ApplicationException("Email address does not exist", HttpStatus.BAD_REQUEST.value());
         }
-    }
-
-    private boolean isValidEmail(String email) {
-        String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
-        return email.matches(regex);
     }
 
 }

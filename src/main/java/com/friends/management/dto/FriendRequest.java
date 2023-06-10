@@ -8,8 +8,8 @@ import java.util.List;
 
 @Getter
 @Setter
-public class FriendRequestDto {
+public class FriendRequest {
 
-    @NotNull(message = "friends are required")
+    @NotNull(message = "Friends are required")
     private List<String> friends;
 }
