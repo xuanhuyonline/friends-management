@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("friend-management")
@@ -18,32 +19,38 @@ public class FriendManagementController {
 
     @PostMapping
     public ApiResponse createFriendsConnection(@RequestBody @Valid FriendRequest request) {
-            return friendService.createFriendConnection(request.getFriends());
+        Boolean success = friendService.createFriendConnection(request.getFriends());
+        return new ApiResponse(success);
     }
 
     @GetMapping
     public ApiResponse findFriendByEmail(@RequestParam("email") String email) {
-        return friendService.findFriendByEmail(email);
-    }
-
-    @PostMapping("/subscription")
-    public ApiResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequest request) {
-        return friendService.createUpdateSubscription(request);
+        List<String> friends = friendService.findFriendByEmail(email);
+        return new ApiResponse(true, friends, friends.size());
     }
 
     @GetMapping("/common-friends")
     public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequest request) {
-        return friendService.getCommonFriends(request.getFriends());
+        List<String> friends = friendService.getCommonFriends(request.getFriends());
+        return new ApiResponse(true, friends, friends.size());
+    }
+
+    @PostMapping("/subscription")
+    public ApiResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequest request) {
+        Boolean success = friendService.createUpdateSubscription(request);
+        return new ApiResponse(success);
     }
 
     @PostMapping("/block")
     public ApiResponse blockFriend(@RequestBody @Valid SubscriptionRequest request) {
-        return friendService.blockFriend(request);
+        Boolean success = friendService.blockFriend(request);
+        return new ApiResponse(success);
     }
 
     @GetMapping("/friend-Subscribed")
-    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequest request){
-        return friendService.findFriendSubscribedByEmail(request);
+    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequest request) {
+        List<String> recipients = friendService.findFriendSubscribedByEmail(request);
+        return new ApiResponse(true, recipients);
     }
 
 }

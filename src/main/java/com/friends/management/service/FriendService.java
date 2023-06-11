@@ -29,7 +29,7 @@ public class FriendService implements IFriendService {
     //Questions 1
     @Override
     @Transactional
-    public ApiResponse createFriendConnection(List<String> friends) {
+    public Boolean createFriendConnection(List<String> friends) {
         if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
@@ -49,7 +49,7 @@ public class FriendService implements IFriendService {
 
         createOrUpdateRelationShip(user1.getId(), user2.getId(), FriendStatus.FRIEND);
         createOrUpdateRelationShip(user2.getId(), user1.getId(), FriendStatus.FRIEND);
-        return new ApiResponse(true);
+        return true;
     }
 
     private void createOrUpdateRelationShip(Long userId1, Long userId2, FriendStatus status) {
@@ -126,7 +126,7 @@ public class FriendService implements IFriendService {
 
     //Questions 2
     @Override
-    public ApiResponse findFriendByEmail(String email) {
+    public List<String> findFriendByEmail(String email) {
         if (!isValidEmail(email)) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
@@ -135,15 +135,12 @@ public class FriendService implements IFriendService {
 
         checkUsersEmail(user);
 
-        List<String> friends = friendRepository.findFriendByEmail(user.getId());
-        int count = friends.size();
-
-        return new ApiResponse(true, friends, count);
+        return friendRepository.findFriendByEmail(user.getId());
     }
 
     //Questions 3
     @Override
-    public ApiResponse getCommonFriends(List<String> friends) {
+    public List<String> getCommonFriends(List<String> friends) {
         if (friends.size() != 2) {
             throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
         }
@@ -153,18 +150,16 @@ public class FriendService implements IFriendService {
 
         checkUsersEmail(user1, user2);
 
-        List<String> commonFriends = friendRepository.findCommonEmails(user1.getId(), user2.getId());
-        int count = commonFriends.size();
-        return new ApiResponse(true, commonFriends, count);
+        return friendRepository.findCommonEmails(user1.getId(), user2.getId());
     }
 
     //Questions 4
     @Transactional
     @Override
-    public ApiResponse createUpdateSubscription(SubscriptionRequest requestDto) {
+    public Boolean createUpdateSubscription(SubscriptionRequest request) {
 
-        User requestor = userRepository.findByEmail(requestDto.getRequestor());
-        User target = userRepository.findByEmail(requestDto.getTarget());
+        User requestor = userRepository.findByEmail(request.getRequestor());
+        User target = userRepository.findByEmail(request.getTarget());
 
         checkUsersEmail(requestor, target);
 
@@ -173,15 +168,15 @@ public class FriendService implements IFriendService {
         }
 
         createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.RECEIVE_UPDATE);
-        return new ApiResponse(true);
+        return true;
     }
 
     //Questions 5
     @Transactional
     @Override
-    public ApiResponse blockFriend(SubscriptionRequest requestDto) {
-        User requestor = userRepository.findByEmail(requestDto.getRequestor());
-        User target = userRepository.findByEmail(requestDto.getTarget());
+    public Boolean blockFriend(SubscriptionRequest request) {
+        User requestor = userRepository.findByEmail(request.getRequestor());
+        User target = userRepository.findByEmail(request.getTarget());
 
         checkUsersEmail(requestor, target);
 
@@ -190,27 +185,27 @@ public class FriendService implements IFriendService {
         }
         createOrUpdateRelationShip(requestor.getId(), target.getId(), FriendStatus.BLOCK);
         createOrUpdateRelationShip(target.getId(), requestor.getId(), FriendStatus.BLOCK);
-        return new ApiResponse(true);
+        return true;
     }
 
     //Questions 6
     @Override
-    public ApiResponse findFriendSubscribedByEmail(SenderRequest requestDto) {
-        User user = userRepository.findByEmail(requestDto.getSender());
+    public List<String> findFriendSubscribedByEmail(SenderRequest request) {
+        User user = userRepository.findByEmail(request.getSender());
 
         checkUsersEmail(user);
 
         List<String> recipients = friendRepository.findFriendSubscribedByEmail(user.getId());
 
-        emailExtractor(requestDto, recipients);
+        emailExtractor(request, recipients);
 
-        return new ApiResponse(true, recipients);
+        return recipients;
     }
 
-    private void emailExtractor(SenderRequest requestDto, List<String> recipients) {
+    private void emailExtractor(SenderRequest request, List<String> recipients) {
         String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
-        String text = requestDto.getText();
+        String text = request.getText();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
 
