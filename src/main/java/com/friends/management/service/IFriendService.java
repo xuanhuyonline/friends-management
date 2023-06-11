@@ -7,15 +7,15 @@ import com.friends.management.dto.SubscriptionRequest;
 import java.util.List;
 
 public interface IFriendService {
-    ApiResponse createFriendConnection(List<String> friends);
+    Boolean createFriendConnection(List<String> friends);
 
-    ApiResponse findFriendByEmail(String email);
+    List<String> findFriendByEmail(String email);
 
-    ApiResponse getCommonFriends(List<String> friends);
+    List<String> getCommonFriends(List<String> friends);
 
-    ApiResponse createUpdateSubscription(SubscriptionRequest requestDto);
+    Boolean createUpdateSubscription(SubscriptionRequest request);
 
-    ApiResponse blockFriend(SubscriptionRequest requestDto);
+    Boolean blockFriend(SubscriptionRequest request);
 
-    ApiResponse findFriendSubscribedByEmail(SenderRequest requestDto);
+    List<String> findFriendSubscribedByEmail(SenderRequest request);
 }
