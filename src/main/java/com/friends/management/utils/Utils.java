@@ -1,5 +1,9 @@
 package com.friends.management.utils;
 
+import com.friends.management.entity.User;
+import com.friends.management.exception.ApplicationException;
+import org.springframework.http.HttpStatus;
+
 public class Utils {
 
     public static boolean isValidEmail(String email) {

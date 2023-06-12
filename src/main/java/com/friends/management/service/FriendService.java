@@ -17,7 +17,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static com.friends.management.utils.Utils.isValidEmail;
-
 @Service
 @RequiredArgsConstructor
 public class FriendService implements IFriendService {
@@ -220,7 +219,7 @@ public class FriendService implements IFriendService {
         }
     }
 
-    private void checkUsersEmail(User user) {
+    public void checkUsersEmail(User user) {
         if (user == null) {
             throw new ApplicationException("Email address does not exist", HttpStatus.BAD_REQUEST.value());
         }
