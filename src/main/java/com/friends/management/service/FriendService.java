@@ -1,8 +1,6 @@
 package com.friends.management.service;
 
-import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendStatus;
-import com.friends.management.dto.SenderRequest;
 import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
@@ -141,6 +139,10 @@ public class FriendService implements IFriendService {
     //Questions 3
     @Override
     public List<String> getCommonFriends(List<String> friends) {
+        if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
+            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
+        }
+
         if (friends.size() != 2) {
             throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
         }
@@ -190,22 +192,25 @@ public class FriendService implements IFriendService {
 
     //Questions 6
     @Override
-    public List<String> findFriendSubscribedByEmail(SenderRequest request) {
-        User user = userRepository.findByEmail(request.getSender());
+    public List<String> findFriendSubscribedByEmail(String sender, String text) {
+        if (!isValidEmail(sender)) {
+            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
+        }
+
+        User user = userRepository.findByEmail(sender);
 
         checkUsersEmail(user);
 
         List<String> recipients = friendRepository.findFriendSubscribedByEmail(user.getId());
 
-        emailExtractor(request, recipients);
+        emailExtractor(text, recipients);
 
         return recipients;
     }
 
-    private void emailExtractor(SenderRequest request, List<String> recipients) {
+    private void emailExtractor(String text, List<String> recipients) {
         String regex = "\\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}\\b";
 
-        String text = request.getText();
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
 

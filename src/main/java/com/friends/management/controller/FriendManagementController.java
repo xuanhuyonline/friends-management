@@ -2,7 +2,6 @@ package com.friends.management.controller;
 
 import com.friends.management.common.ApiResponse;
 import com.friends.management.dto.FriendRequest;
-import com.friends.management.dto.SenderRequest;
 import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.service.IFriendService;
 import lombok.RequiredArgsConstructor;
@@ -30,9 +29,9 @@ public class FriendManagementController {
     }
 
     @GetMapping("/common-friends")
-    public ApiResponse getCommonFriends(@RequestBody @Valid FriendRequest request) {
-        List<String> friends = friendService.getCommonFriends(request.getFriends());
-        return new ApiResponse(true, friends, friends.size());
+    public ApiResponse getCommonFriends(@RequestParam("friends") List<String> friends) {
+        List<String> CommonFriends = friendService.getCommonFriends(friends);
+        return new ApiResponse(true, CommonFriends, CommonFriends.size());
     }
 
     @PostMapping("/subscription")
@@ -47,9 +46,10 @@ public class FriendManagementController {
         return new ApiResponse(success);
     }
 
+
     @GetMapping("/friend-Subscribed")
-    public ApiResponse findFriendSubscribedByEmail(@RequestBody @Valid SenderRequest request) {
-        List<String> recipients = friendService.findFriendSubscribedByEmail(request);
+    public ApiResponse findFriendSubscribedByEmail(@RequestParam("sender") String sender, @RequestParam("text") String text) {
+        List<String> recipients = friendService.findFriendSubscribedByEmail(sender, text);
         return new ApiResponse(true, recipients);
     }
 
