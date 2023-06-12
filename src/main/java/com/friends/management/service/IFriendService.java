@@ -1,7 +1,5 @@
 package com.friends.management.service;
 
-import com.friends.management.common.ApiResponse;
-import com.friends.management.dto.SenderRequest;
 import com.friends.management.dto.SubscriptionRequest;
 
 import java.util.List;
@@ -17,5 +15,5 @@ public interface IFriendService {
 
     Boolean blockFriend(SubscriptionRequest request);
 
-    List<String> findFriendSubscribedByEmail(SenderRequest request);
+    List<String> findFriendSubscribedByEmail(String sender, String text);
 }
