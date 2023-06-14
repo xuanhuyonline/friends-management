@@ -2,10 +2,7 @@ package com.friends.management.entity;
 
 
 import com.friends.management.dto.FriendStatus;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -15,6 +12,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @Table(name = "friends")
 @Entity
+@Builder
 public class Friend {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -31,19 +29,4 @@ public class Friend {
 
     @Enumerated(EnumType.STRING)
     private FriendStatus status;
-
-    public Friend(User user, User friend, FriendStatus status) {
-        this.user = user;
-        this.friend = friend;
-        this.status = status;
-    }
-
-    public Friend(User user, User friend, FriendStatus status, Boolean subscriber) {
-        this.user = user;
-        this.friend = friend;
-        this.status = status;
-        this.subscriber = subscriber;
-    }
-
-
 }
