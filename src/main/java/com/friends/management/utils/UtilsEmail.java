@@ -30,7 +30,7 @@ public class UtilsEmail {
         return emails;
     }
 
-    public static void checkUsersEmail(User user1, User user2) {
+    public static void checkSameEmail(User user1, User user2) {
         if (user1 == user2) {
             throw new ApplicationException("Two emails cannot be the same", HttpStatus.BAD_REQUEST.value());
         }
