@@ -37,32 +37,32 @@ public class FriendServiceTest {
     //Questions 1
     @Test
     public void testCreateFriendConnection_ValidEmail() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend1@gmail.com");
-        friendsEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
-        Optional<User> user1 =Optional.of(new User());
-        Optional<User> user2 =Optional.of(new User());
+        Optional<User> user1 = Optional.of(new User());
+        Optional<User> user2 = Optional.of(new User());
 
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
 
         Mockito.when(friendRepository.isBlockedEachOther(user1.get().getId(), user2.get().getId())).thenReturn(false);
         Mockito.when(friendRepository.isAlreadyFriends(user1.get().getId(), user2.get().getId())).thenReturn(false);
 
-        Boolean result = friendService.createFriendConnection(friendsEmail);
+        Boolean result = friendService.createFriendConnection(friendEmails);
 
         Assertions.assertTrue(result);
     }
 
     @Test
     public void testCreateFriendConnection_InValidEmail() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("invalid_email1");
-        friendsEmail.add("invalid_email2");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("invalid_email1");
+        friendEmails.add("invalid_email2");
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
         Assertions.assertEquals("Invalid email format", exception.getMessage());
@@ -71,13 +71,13 @@ public class FriendServiceTest {
 
     @Test
     public void testCreateFriendConnection_NotExactlyTwoEmails() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend1@gmail.com");
-        friendsEmail.add("friend2@gmail.com");
-        friendsEmail.add("friend3@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
+        friendEmails.add("friend3@gmail.com");
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
         Assertions.assertEquals("Exactly two email addresses are required", exception.getMessage());
@@ -86,34 +86,34 @@ public class FriendServiceTest {
 
     @Test
     public void testCreateFriendConnection_NonExistingEmail() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend1@gmail.com");
-        friendsEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(0))).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(Optional.empty());
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
-        Assertions.assertEquals("Email address does not exist with: " + friendsEmail.get(0), exception.getMessage());
+        Assertions.assertEquals("Email address does not exist with: " + friendEmails.get(0), exception.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getHttpStatus());
     }
 
     @Test
     public void testCreateFriendConnection_SameEmail() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend@gmail.com");
-        friendsEmail.add("friend@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend@gmail.com");
+        friendEmails.add("friend@gmail.com");
 
         Optional<User> user1 = Optional.of(new User());
         Optional<User> user2 = Optional.of(new User());
 
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
         Assertions.assertEquals("Two emails cannot be the same", exception.getMessage());
@@ -122,19 +122,19 @@ public class FriendServiceTest {
 
     @Test
     public void testCreateFriendConnection_BlockedEachOther() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend1@gmail.com");
-        friendsEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
         Optional<User> user1 = Optional.of(new User());
         Optional<User> user2 = Optional.of(new User());
 
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
         Mockito.when(friendRepository.isBlockedEachOther(user1.get().getId(), user2.get().getId())).thenReturn(true);
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-           friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
         Assertions.assertEquals("Two users have blocked each other", exception.getMessage());
@@ -143,21 +143,21 @@ public class FriendServiceTest {
 
     @Test
     public void testCreateFriendConnection_AlreadyFriends() {
-        List<String> friendsEmail = new ArrayList<>();
-        friendsEmail.add("friend1@gmail.com");
-        friendsEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
         Optional<User> user1 = Optional.of(new User());
         Optional<User> user2 = Optional.of(new User());
 
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendsEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
 
         Mockito.when(friendRepository.isBlockedEachOther(user1.get().getId(), user2.get().getId())).thenReturn(false);
         Mockito.when(friendRepository.isAlreadyFriends(user1.get().getId(), user2.get().getId())).thenReturn(true);
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            friendService.createFriendConnection(friendsEmail);
+            friendService.createFriendConnection(friendEmails);
         });
 
         Assertions.assertEquals("Friend connection already exists", exception.getMessage());
@@ -192,8 +192,8 @@ public class FriendServiceTest {
 
         Mockito.when(userRepository.findByEmail(request.getRequestor())).thenReturn(Optional.empty());
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
-           friendService.createUpdateSubscription(request);
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
+            friendService.createUpdateSubscription(request);
         });
 
         Assertions.assertEquals("Email address does not exist with: " + request.getRequestor(), exception.getMessage());
@@ -235,7 +235,7 @@ public class FriendServiceTest {
 
         Mockito.when(friendRepository.isBlockedEachOther(requestor.get().getId(), target.get().getId())).thenReturn(true);
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
             friendService.createUpdateSubscription(request);
         });
 
@@ -258,7 +258,7 @@ public class FriendServiceTest {
         Mockito.when(friendRepository.isBlockedEachOther(requestor.get().getId(), target.get().getId())).thenReturn(false);
         Mockito.when(friendRepository.isReceivedUpdate(requestor.get().getId(), target.get().getId())).thenReturn(true);
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
             friendService.createUpdateSubscription(request);
         });
 
@@ -293,7 +293,7 @@ public class FriendServiceTest {
 
         Mockito.when(userRepository.findByEmail(request.getRequestor())).thenReturn(Optional.empty());
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
             friendService.createUpdateSubscription(request);
         });
 
@@ -303,7 +303,6 @@ public class FriendServiceTest {
 
     @Test
     public void testBlockFriend_SameEmail() {
-        //
         SubscriptionRequest request = new SubscriptionRequest();
         request.setRequestor("friend@gmail.com");
         request.setTarget("friend@gmail.com");
@@ -336,7 +335,7 @@ public class FriendServiceTest {
 
         Mockito.when(friendRepository.isBlockedEachOther(requestor.get().getId(), target.get().getId())).thenReturn(true);
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
             friendService.createUpdateSubscription(request);
         });
 

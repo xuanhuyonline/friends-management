@@ -33,20 +33,6 @@ public class UserServiceTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    public void shouldReturnValidEmail() {
-        String email = "lexuanhuy2k1@gmail.com";
-        boolean result = UtilsEmail.isValidEmail(email);
-        Assertions.assertTrue(result);
-    }
-
-    @Test
-    public void shouldReturnInValidEmail() {
-        String email = "invalid_email";
-        boolean result = UtilsEmail.isValidEmail(email);
-        Assertions.assertFalse(result);
-    }
-
     //Questions 2
     @Test
     public void testFindFriendByEmail_ValidEmail() {
@@ -163,7 +149,7 @@ public class UserServiceTest {
         friendEmails.add("");
         friendEmails.add("");
 
-        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () ->{
+        ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
             userService.getCommonFriends(friendEmails);
         });
 
@@ -173,13 +159,13 @@ public class UserServiceTest {
 
     @Test
     public void testGetCommonFriends_NotExactlyTwoEmails() {
-        List<String> friendEmail = new ArrayList<>();
-        friendEmail.add("friend1@gmail.com");
-        friendEmail.add("friends@gmail.com");
-        friendEmail.add("friend3@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friends@gmail.com");
+        friendEmails.add("friend3@gmail.com");
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            userService.getCommonFriends(friendEmail);
+            userService.getCommonFriends(friendEmails);
         });
 
         Assertions.assertEquals("Exactly two email addresses are required", exception.getMessage());
@@ -188,54 +174,54 @@ public class UserServiceTest {
 
     @Test
     public void testGetCommonFriends_NonExistingEmail() {
-        List<String> friendEmail = new ArrayList<>();
-        friendEmail.add("friend1@gmail.com");
-        friendEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
-        Mockito.when(userRepository.findByEmail(friendEmail.get(0))).thenReturn(Optional.empty());
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(Optional.empty());
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            userService.getCommonFriends(friendEmail);
+            userService.getCommonFriends(friendEmails);
         });
 
-        Assertions.assertEquals("Email address does not exist with: " + friendEmail.get(0), exception.getMessage());
+        Assertions.assertEquals("Email address does not exist with: " + friendEmails.get(0), exception.getMessage());
         Assertions.assertEquals(HttpStatus.BAD_REQUEST.value(), exception.getHttpStatus());
     }
 
     @Test
     public void testGetCommonFriends_NoFriends() {
-        List<String> friendEmail = new ArrayList<>();
-        friendEmail.add("friend1@gmail.com");
-        friendEmail.add("friend2@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
 
         Optional<User> user1 = Optional.of(new User());
         Optional<User> user2 = Optional.of(new User());
 
         List<String> commonFriends = new ArrayList<>();
 
-        Mockito.when(userRepository.findByEmail(friendEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
         Mockito.when(userRepository.findCommonEmails(user1.get().getId(), user2.get().getId())).thenReturn(commonFriends);
 
-        List<String> result = userService.getCommonFriends(friendEmail);
+        List<String> result = userService.getCommonFriends(friendEmails);
 
         Assertions.assertEquals(0, result.size());
     }
 
     @Test
     public void testGetCommonFriends_SameEmail() {
-        List<String> friendEmail = new ArrayList<>();
-        friendEmail.add("friend@gmail.com");
-        friendEmail.add("friend@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend@gmail.com");
+        friendEmails.add("friend@gmail.com");
 
         Optional<User> user1 = Optional.of(new User());
         Optional<User> user2 = Optional.of(new User());
 
-        Mockito.when(userRepository.findByEmail(friendEmail.get(0))).thenReturn(user1);
-        Mockito.when(userRepository.findByEmail(friendEmail.get(1))).thenReturn(user2);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
 
         ApplicationException exception = Assertions.assertThrows(ApplicationException.class, () -> {
-            userService.getCommonFriends(friendEmail);
+            userService.getCommonFriends(friendEmails);
         });
 
         Assertions.assertEquals("Two emails cannot be the same", exception.getMessage());
@@ -248,13 +234,13 @@ public class UserServiceTest {
         String senderEmail = "sender@gmail.com";
         String text = "Hello World! kate@example.com";
 
-        List<String> friendEmail = new ArrayList<>();
-        friendEmail.add("friend@gmail.com");
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend@gmail.com");
 
         Optional<User> user = Optional.of(new User());
 
         Mockito.when(userRepository.findByEmail(senderEmail)).thenReturn(user);
-        Mockito.when(userRepository.findFriendSubscribedByEmail(user.get().getId())).thenReturn(friendEmail);
+        Mockito.when(userRepository.findFriendSubscribedByEmail(user.get().getId())).thenReturn(friendEmails);
 
         List<String> result = userService.findFriendSubscribedByEmail(senderEmail, text);
 
@@ -310,12 +296,12 @@ public class UserServiceTest {
         String senderEmail = "friend@gmail.com";
         String text = "Hello World!";
 
-        List<String> friendEmail = new ArrayList<>();
+        List<String> friendEmails = new ArrayList<>();
 
         Optional<User> user = Optional.of(new User());
 
         Mockito.when(userRepository.findByEmail(senderEmail)).thenReturn(user);
-        Mockito.when(userRepository.findFriendSubscribedByEmail(user.get().getId())).thenReturn(friendEmail);
+        Mockito.when(userRepository.findFriendSubscribedByEmail(user.get().getId())).thenReturn(friendEmails);
 
         List<String> result = userService.findFriendSubscribedByEmail(senderEmail, text);
 
