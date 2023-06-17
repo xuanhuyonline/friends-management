@@ -12,7 +12,7 @@ public interface FriendRepository extends JpaRepository<Friend, Long> {
     @Query("select count(f) > 0 from Friend f " +
             "where (f.user.id = :userId1 and f.friend.id = :userId2 and f.status = 'FRIEND') " +
             "or (f.friend.id = :userId1 and f.user.id = :userId2 and f.status = 'FRIEND')")
-    boolean areFriends(Long userId1, Long userId2);
+    boolean isAlreadyFriends(Long userId1, Long userId2);
 
     @Query("select f from Friend f " +
             "where f.user.id = :userId1 and f.friend.id = :userId2")

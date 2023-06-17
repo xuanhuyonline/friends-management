@@ -40,13 +40,13 @@ public class FriendServiceImpl implements FriendService {
         User user2 = userRepository.findByEmail(friends.get(1))
                 .orElseThrow(() -> new ApplicationException("Email address does not exist with: " + friends.get(1), HttpStatus.BAD_REQUEST.value()));
 
-        checkUsersEmail(user1, user2);
+        checkSameEmail(user1, user2);
 
         if (friendRepository.isBlockedEachOther(user1.getId(), user2.getId())) {
             throw new ApplicationException("Two users have blocked each other", HttpStatus.BAD_REQUEST.value());
         }
 
-        if (friendRepository.areFriends(user1.getId(), user2.getId())) {
+        if (friendRepository.isAlreadyFriends(user1.getId(), user2.getId())) {
             throw new ApplicationException("Friend connection already exists", HttpStatus.BAD_REQUEST.value());
         }
 
@@ -128,7 +128,7 @@ public class FriendServiceImpl implements FriendService {
         User target = userRepository.findByEmail(request.getTarget())
                 .orElseThrow(() -> new ApplicationException("Email address does not exist with: " + request.getTarget(), HttpStatus.BAD_REQUEST.value()));
 
-        checkUsersEmail(requestor, target);
+        checkSameEmail(requestor, target);
 
         if (friendRepository.isBlockedEachOther(requestor.getId(), target.getId())) {
             throw new ApplicationException("Two users have blocked each other", HttpStatus.BAD_REQUEST.value());
@@ -152,7 +152,7 @@ public class FriendServiceImpl implements FriendService {
         User target = userRepository.findByEmail(request.getTarget())
                 .orElseThrow(() -> new ApplicationException("Email address does not exist with: " + request.getTarget(), HttpStatus.BAD_REQUEST.value()));
 
-        checkUsersEmail(requestor, target);
+        checkSameEmail(requestor, target);
 
         if (friendRepository.isBlockedEachOther(requestor.getId(), target.getId())) {
             throw new ApplicationException("Two users have blocked each other", HttpStatus.BAD_REQUEST.value());

@@ -2,6 +2,7 @@ package com.friends.management.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.validation.constraints.Email;
@@ -10,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class SubscriptionRequest {
     @Email(message = "Invalid email format")
     @NotBlank(message = "Email cannot be empty")

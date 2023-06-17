@@ -19,6 +19,10 @@ public class UserServiceImpl implements UserService{
     //Questions 2
     @Override
     public List<String> findFriendByEmail(String email) {
+        if(email.isEmpty()){
+            throw new ApplicationException("Email cannot be empty", HttpStatus.BAD_REQUEST.value());
+        }
+
         if (!isValidEmail(email)) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
@@ -32,6 +36,10 @@ public class UserServiceImpl implements UserService{
     //Questions 3
     @Override
     public List<String> getCommonFriends(List<String> friends) {
+        if (friends.get(0).isEmpty() || friends.get(1).isEmpty()) {
+            throw new ApplicationException("Email cannot be empty", HttpStatus.BAD_REQUEST.value());
+        }
+
         if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
@@ -45,7 +53,7 @@ public class UserServiceImpl implements UserService{
         User user2 = userRepository.findByEmail(friends.get(1))
                 .orElseThrow(() -> new ApplicationException("Email address does not exist with: " + friends.get(1), HttpStatus.BAD_REQUEST.value()));
 
-        checkUsersEmail(user1, user2);
+        checkSameEmail(user1, user2);
 
         return userRepository.findCommonEmails(user1.getId(), user2.getId());
     }
@@ -53,6 +61,10 @@ public class UserServiceImpl implements UserService{
     //Questions 6
     @Override
     public List<String> findFriendSubscribedByEmail(String sender, String text) {
+        if (sender.isEmpty()) {
+            throw new ApplicationException("Email cannot be empty", HttpStatus.BAD_REQUEST.value());
+        }
+
         if (!isValidEmail(sender)) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
