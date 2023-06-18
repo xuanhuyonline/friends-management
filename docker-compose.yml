@@ -1,0 +1,24 @@
+version: '3'
+services:
+  app:
+    container_name: app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/friends_management
+    depends_on:
+      - db
+  db:
+    container_name: db
+    image: postgres
+    ports:
+      - 5433:5432
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=friends_management
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
