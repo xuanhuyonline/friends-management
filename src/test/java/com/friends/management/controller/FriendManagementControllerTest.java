@@ -34,20 +34,30 @@ public class FriendManagementControllerTest {
 
         when(friendService.createFriendConnection(friends)).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/friends").contentType(MediaType.APPLICATION_JSON).content("{\"friends\":[\"friend1@gmail.com\",\"friend2@gmail.com\"]}")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+        mockMvc.perform(MockMvcRequestBuilders.post("/friends")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"friends\":[\"friend1@gmail.com\",\"friend2@gmail.com\"]}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
     }
 
     @Test
     public void testCreateUpdateSubscription() throws Exception {
         when(friendService.createUpdateSubscription(any(SubscriptionRequest.class))).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/friends/subscription").contentType(MediaType.APPLICATION_JSON).content("{\"requestor\":\"friend1@gmail.com\",\"target\":\"friend2@gmail.com\"}")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+        mockMvc.perform(MockMvcRequestBuilders.post("/friends/subscription")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"requestor\":\"friend1@gmail.com\",\"target\":\"friend2@gmail.com\"}"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
     }
 
     @Test
     public void testBlockFriend() throws Exception {
         when(friendService.blockFriend(any(SubscriptionRequest.class))).thenReturn(true);
 
-        mockMvc.perform(MockMvcRequestBuilders.post("/friends/block").contentType(MediaType.APPLICATION_JSON).content("{\"requestor\": \"friend1@gmail.com\", \"target\": \"friend2@gmail.com\" }")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
+        mockMvc.perform(MockMvcRequestBuilders.post("/friends/block")
+                .contentType(MediaType.APPLICATION_JSON).content("{\"requestor\": \"friend1@gmail.com\", \"target\": \"friend2@gmail.com\" }"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true));
     }
 }
