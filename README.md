@@ -11,6 +11,11 @@
 2. Gradle 8.1
 3. Install and run PostgreSQL on your localhost for storing data
 
+### Test coverage
+    Class: 94%
+    Method: 87%
+    Line: 92%
+
 ### How to use from this sample project
 
 ##### Clone the repository

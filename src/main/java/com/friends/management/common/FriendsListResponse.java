@@ -8,7 +8,6 @@ import lombok.Setter;
 import java.util.List;
 
 @Getter
-@Setter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class FriendsListResponse {
