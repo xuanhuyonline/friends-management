@@ -1,6 +1,7 @@
 package com.friends.management.service;
 
 import com.friends.management.dto.SubscriptionRequest;
+import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.FriendRepository;
@@ -49,6 +50,29 @@ public class FriendServiceTest {
 
         Mockito.when(friendRepository.isBlockedEachOther(user1.get().getId(), user2.get().getId())).thenReturn(false);
         Mockito.when(friendRepository.isAlreadyFriends(user1.get().getId(), user2.get().getId())).thenReturn(false);
+
+        Boolean result = friendService.createFriendConnection(friendEmails);
+
+        Assertions.assertTrue(result);
+    }
+
+    @Test
+    public void testUpdateFriendConnection_ValidEmail() {
+        List<String> friendEmails = new ArrayList<>();
+        friendEmails.add("friend1@gmail.com");
+        friendEmails.add("friend2@gmail.com");
+
+        Optional<User> user1 = Optional.of(new User());
+        Optional<User> user2 = Optional.of(new User());
+
+        Mockito.when(userRepository.findByEmail(friendEmails.get(0))).thenReturn(user1);
+        Mockito.when(userRepository.findByEmail(friendEmails.get(1))).thenReturn(user2);
+
+        Mockito.when(friendRepository.isBlockedEachOther(user1.get().getId(), user2.get().getId())).thenReturn(false);
+        Mockito.when(friendRepository.isAlreadyFriends(user1.get().getId(), user2.get().getId())).thenReturn(false);
+
+        Friend friend = new Friend();
+        Mockito.when(friendRepository.friendStatus(user1.get().getId(), user2.get().getId())).thenReturn(friend);
 
         Boolean result = friendService.createFriendConnection(friendEmails);
 
