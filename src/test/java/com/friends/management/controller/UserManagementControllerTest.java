@@ -1,10 +1,14 @@
 package com.friends.management.controller;
 
+import com.friends.management.security.jwt.AuthenticationEntryPointHandler;
+import com.friends.management.security.jwt.JwtUtils;
+import com.friends.management.security.service.UserDetailsServiceImpl;
 import com.friends.management.service.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -23,6 +27,15 @@ public class UserManagementControllerTest {
     @MockBean
     private UserService userService;
 
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private AuthenticationEntryPointHandler authenticationEntryPointHandler;
+
+    @MockBean
+    private JwtUtils jwtUtils;
+
     @Test
     public void testFindFriendByEmail() throws Exception {
         String email = "test@gmail.com";
@@ -32,10 +45,15 @@ public class UserManagementControllerTest {
 
         when(userService.findFriendByEmail(email)).thenReturn(friends);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users").param("email", email)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true)).andExpect(MockMvcResultMatchers.jsonPath("$.friends").value(friends)).andExpect(MockMvcResultMatchers.jsonPath("$.count").value(friends.size()));
+        mockMvc.perform(MockMvcRequestBuilders.get("/users").param("email", email))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.friends").value(friends))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(friends.size()));
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testGetCommonFriends() throws Exception {
         List<String> friends = new ArrayList<>();
         friends.add("friend1@gmail.com");
@@ -47,10 +65,16 @@ public class UserManagementControllerTest {
 
         when(userService.getCommonFriends(friends)).thenReturn(commonFriends);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/common").param("friends", "friend1@gmail.com, friend2@gmail.com")).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true)).andExpect(MockMvcResultMatchers.jsonPath("$.friends").value(commonFriends)).andExpect(MockMvcResultMatchers.jsonPath("$.count").value(commonFriends.size()));
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/common")
+                .param("friends", "friend1@gmail.com, friend2@gmail.com"))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.friends").value(commonFriends))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.count").value(commonFriends.size()));
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testFindFriendSubscribedByEmail() throws Exception {
         String sender = "test@gmail.com";
         String text = "Hello World! friend2@gmail.com, friend3@gmail.com";

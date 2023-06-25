@@ -133,4 +133,29 @@ public class UserRepositoryTest {
         Assertions.assertEquals(friends.size(), 1);
         Assertions.assertEquals(friends.get(0), user1.getEmail());
     }
+
+    @Test
+    public void testFindByUsername() {
+        User user = new User();
+        user.setUsername("huy123");
+        entityManager.persist(user);
+        entityManager.flush();
+
+        Optional<User> foundUser = userRepository.findByUsername(user.getUsername());
+
+        Assertions.assertTrue(foundUser.isPresent());
+        Assertions.assertEquals(user.getUsername(), foundUser.get().getUsername());
+    }
+
+    @Test
+    public void testExistsByUsername() {
+        Boolean result = userRepository.existsByUsername("user");
+        Assertions.assertFalse(result);
+    }
+
+    @Test
+    public void testExistsByEmail() {
+        Boolean result = userRepository.existsByEmail("huyle@gmail.com");
+        Assertions.assertFalse(result);
+    }
 }

@@ -1,0 +1,32 @@
+package com.friends.management.security.jwt;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.friends.management.exception.ErrorResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.stereotype.Component;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+@Component
+public class AuthenticationEntryPointHandler implements AuthenticationEntryPoint {
+
+    private static final Logger logger = LoggerFactory.getLogger(AuthenticationEntryPointHandler.class);
+
+    @Override
+    public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) throws IOException {
+        logger.error("Unauthorized error: {}", authException.getMessage());
+        //response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+        ErrorResponse errorResponse = new ErrorResponse(HttpServletResponse.SC_UNAUTHORIZED, "Error: Unauthorized");
+
+        ObjectMapper objectMapper = new ObjectMapper();
+        String jsonErrorResponse = objectMapper.writeValueAsString(errorResponse);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        response.getWriter().write(jsonErrorResponse);
+    }
+}

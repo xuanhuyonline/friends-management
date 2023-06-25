@@ -5,6 +5,7 @@ import com.friends.management.dto.FriendRequest;
 import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.service.FriendService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -15,18 +16,21 @@ import javax.validation.Valid;
 public class FriendManagementController {
     private final FriendService friendService;
 
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping
     public SuccessResponse createFriendsConnection(@RequestBody @Valid FriendRequest request) {
         Boolean success = friendService.createFriendConnection(request.getFriends());
         return new SuccessResponse(success);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/subscription")
     public SuccessResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequest request) {
         Boolean success = friendService.createUpdateSubscription(request);
         return new SuccessResponse(success);
     }
 
+    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/block")
     public SuccessResponse blockFriend(@RequestBody @Valid SubscriptionRequest request) {
         Boolean success = friendService.blockFriend(request);
