@@ -1,12 +1,16 @@
 package com.friends.management.controller;
 
 import com.friends.management.dto.SubscriptionRequest;
+import com.friends.management.security.jwt.AuthenticationEntryPointHandler;
+import com.friends.management.security.jwt.JwtUtils;
+import com.friends.management.security.service.UserDetailsServiceImpl;
 import com.friends.management.service.FriendService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -26,7 +30,17 @@ public class FriendManagementControllerTest {
     @MockBean
     private FriendService friendService;
 
+    @MockBean
+    private UserDetailsServiceImpl userDetailsService;
+
+    @MockBean
+    private AuthenticationEntryPointHandler authenticationEntryPointHandler;
+
+    @MockBean
+    private JwtUtils jwtUtils;
+
     @Test
+    @WithMockUser(roles = {"USER", "MODERATOR", "ADMIN"})
     public void testCreateFriendsConnection() throws Exception {
         List<String> friends = new ArrayList<>();
         friends.add("friend1@gmail.com");
@@ -42,6 +56,7 @@ public class FriendManagementControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER", "MODERATOR", "ADMIN"})
     public void testCreateUpdateSubscription() throws Exception {
         when(friendService.createUpdateSubscription(any(SubscriptionRequest.class))).thenReturn(true);
 
@@ -52,6 +67,7 @@ public class FriendManagementControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = {"USER", "MODERATOR", "ADMIN"})
     public void testBlockFriend() throws Exception {
         when(friendService.blockFriend(any(SubscriptionRequest.class))).thenReturn(true);
 

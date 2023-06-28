@@ -3,7 +3,7 @@ package com.friends.management.service;
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.UserRepository;
-import com.friends.management.utils.UtilsEmail;
+import com.friends.management.service.impl.UserServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

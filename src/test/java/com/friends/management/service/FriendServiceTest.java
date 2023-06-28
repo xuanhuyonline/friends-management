@@ -6,6 +6,7 @@ import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.FriendRepository;
 import com.friends.management.repository.UserRepository;
+import com.friends.management.service.impl.FriendServiceImpl;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

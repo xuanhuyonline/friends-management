@@ -1,4 +1,4 @@
-package com.friends.management.service;
+package com.friends.management.service.impl;
 
 import com.friends.management.dto.FriendStatus;
 import com.friends.management.dto.SubscriptionRequest;
@@ -7,6 +7,7 @@ import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.FriendRepository;
 import com.friends.management.repository.UserRepository;
+import com.friends.management.service.FriendService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,7 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.friends.management.utils.UtilsEmail.*;
+import static com.friends.management.utils.UtilsEmail.checkSameEmail;
+import static com.friends.management.utils.UtilsEmail.isValidEmail;
 
 @Service
 @RequiredArgsConstructor

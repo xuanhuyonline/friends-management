@@ -1,8 +1,9 @@
-package com.friends.management.service;
+package com.friends.management.service.impl;
 
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
 import com.friends.management.repository.UserRepository;
+import com.friends.management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import static com.friends.management.utils.UtilsEmail.*;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService{
+public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
 
     //Questions 2
