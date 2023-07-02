@@ -2,7 +2,6 @@ package com.friends.management.repository;
 
 import com.friends.management.dto.RoleEnum;
 import com.friends.management.entity.Role;
-import com.friends.management.entity.User;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
