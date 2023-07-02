@@ -1,5 +1,7 @@
 package com.friends.management.service.impl;
 
+import com.friends.management.aspect.AuditLog;
+import com.friends.management.aspect.LogExecutionTime;
 import com.friends.management.common.JwtResponse;
 import com.friends.management.dto.LoginRequest;
 import com.friends.management.dto.RoleEnum;
@@ -37,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
+    @LogExecutionTime
     @Override
     public JwtResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -53,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
     }
 
+    @AuditLog(action = "create_account")
     @Override
     public Boolean register(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
