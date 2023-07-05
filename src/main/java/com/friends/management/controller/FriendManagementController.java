@@ -16,21 +16,18 @@ import javax.validation.Valid;
 public class FriendManagementController {
     private final FriendService friendService;
 
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping
     public SuccessResponse createFriendsConnection(@RequestBody @Valid FriendRequest request) {
         Boolean success = friendService.createFriendConnection(request.getFriends());
         return new SuccessResponse(success);
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/subscription")
     public SuccessResponse createUpdateSubscription(@RequestBody @Valid SubscriptionRequest request) {
         Boolean success = friendService.createUpdateSubscription(request);
         return new SuccessResponse(success);
     }
 
-    @PreAuthorize("hasRole('USER') or hasRole('MODERATOR') or hasRole('ADMIN')")
     @PostMapping("/block")
     public SuccessResponse blockFriend(@RequestBody @Valid SubscriptionRequest request) {
         Boolean success = friendService.blockFriend(request);

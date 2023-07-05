@@ -1,5 +1,7 @@
 package com.friends.management.service.impl;
 
+import com.friends.management.aspect.AuditLog;
+import com.friends.management.aspect.LogExecutionTime;
 import com.friends.management.common.JwtResponse;
 import com.friends.management.dto.LoginRequest;
 import com.friends.management.dto.RoleEnum;
@@ -37,6 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
 
+    @LogExecutionTime
     @Override
     public JwtResponse login(LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
@@ -53,6 +56,7 @@ public class AuthServiceImpl implements AuthService {
         return new JwtResponse(jwt, userDetails.getId(), userDetails.getUsername(), userDetails.getEmail(), roles);
     }
 
+    @AuditLog(action = "create_account")
     @Override
     public Boolean register(SignUpRequest signUpRequest) {
         if (userRepository.existsByUsername(signUpRequest.getUsername())) {
@@ -66,23 +70,23 @@ public class AuthServiceImpl implements AuthService {
         User user = new User(signUpRequest.getUsername(), signUpRequest.getEmail(),
                 encoder.encode(signUpRequest.getPassword()));
 
-        createSignRoles(signUpRequest, user);
+        setUserRoles(signUpRequest, user);
 
         userRepository.save(user);
 
         return true;
     }
 
-    private void createSignRoles(SignUpRequest signUpRequest, User user) {
-        Set<String> asignRoles = signUpRequest.getRole();
+    private void setUserRoles(SignUpRequest signUpRequest, User user) {
+        Set<String> assignRoles = signUpRequest.getRole();
         Set<Role> roles = new HashSet<>();
 
-        if (asignRoles == null) {
+        if (assignRoles == null) {
             Role userRole = roleRepository.findFirstByName(RoleEnum.ROLE_USER.getRole())
                     .orElseThrow(() -> new ApplicationException("Error: Role is not found.", HttpStatus.BAD_REQUEST.value()));
             roles.add(userRole);
         } else {
-            asignRoles.forEach(role -> {
+            assignRoles.forEach(role -> {
                 switch (role) {
                     case "admin":
                         Role adminRole = roleRepository.findFirstByName(RoleEnum.ROLE_ADMIN.getRole())

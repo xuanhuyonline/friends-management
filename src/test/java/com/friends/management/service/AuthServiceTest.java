@@ -137,7 +137,7 @@ public class AuthServiceTest {
         User user = new User();
         user.setId(1L);
         user.setUsername("username");
-        user.setEmail("lexuanhuy@hmail.com");
+        user.setEmail("lexuanhuy@gmail.com");
         user.setPassword("password");
 
         Set<Role> roles = new HashSet<>();
@@ -153,7 +153,6 @@ public class AuthServiceTest {
 
         Mockito.when(userRepository.findByUsername(loginRequest.getUsername())).thenReturn(Optional.of(user));
         Mockito.when(encoder.matches(loginRequest.getPassword(), user.getPassword())).thenReturn(true);
-        //Mockito.when(roleRepository.findByNameIn(rolesList)).thenReturn(roles);
         Mockito.when(authenticationManager.authenticate(authentication)).thenReturn(new UsernamePasswordAuthenticationToken(userDetails, null));
         Mockito.when(jwtUtils.generateJwtToken(userDetails)).thenReturn(jwtToken);
 
@@ -163,6 +162,5 @@ public class AuthServiceTest {
         Assertions.assertEquals(expectedResponse.getId(), actualResponse.getId());
         Assertions.assertEquals(expectedResponse.getUsername(), actualResponse.getUsername());
         Assertions.assertEquals(expectedResponse.getEmail(), actualResponse.getEmail());
-        //Assertions.assertEquals(expectedResponse.getRoles(), actualResponse.getRoles());
     }
 }
