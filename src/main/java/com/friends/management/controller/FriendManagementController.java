@@ -1,11 +1,10 @@
 package com.friends.management.controller;
 
-import com.friends.management.common.SuccessResponse;
+import com.friends.management.response.SuccessResponse;
 import com.friends.management.dto.FriendRequest;
 import com.friends.management.dto.SubscriptionRequest;
 import com.friends.management.service.FriendService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;

@@ -1,4 +1,4 @@
-package com.friends.management.common;
+package com.friends.management.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
