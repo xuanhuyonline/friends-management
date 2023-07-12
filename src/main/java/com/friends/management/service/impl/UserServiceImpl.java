@@ -37,16 +37,16 @@ public class UserServiceImpl implements UserService {
     //Questions 3
     @Override
     public List<String> getCommonFriends(List<String> friends) {
+        if (friends.size() != 2) {
+            throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
+        }
+
         if (friends.get(0).isEmpty() || friends.get(1).isEmpty()) {
             throw new ApplicationException("Email cannot be empty", HttpStatus.BAD_REQUEST.value());
         }
 
         if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
             throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
-        }
-
-        if (friends.size() != 2) {
-            throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
         }
 
         User user1 = userRepository.findByEmail(friends.get(0))

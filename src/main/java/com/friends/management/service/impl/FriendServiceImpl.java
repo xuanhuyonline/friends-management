@@ -28,12 +28,12 @@ public class FriendServiceImpl implements FriendService {
     @Override
     @Transactional
     public Boolean createFriendConnection(List<String> friends) {
-        if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
-            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
-        }
-
         if (friends.size() != 2) {
             throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
+        }
+
+        if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {
+            throw new ApplicationException("Invalid email format", HttpStatus.BAD_REQUEST.value());
         }
 
         User user1 = userRepository.findByEmail(friends.get(0))
