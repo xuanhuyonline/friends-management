@@ -40,7 +40,7 @@ public class FriendManagementControllerTest {
     private JwtUtils jwtUtils;
 
     @Test
-    @WithMockUser(roles = {"USER", "MODERATOR", "ADMIN"})
+    @WithMockUser(roles = {"USER", "ADMIN"})
     public void testCreateFriendsConnection() throws Exception {
         List<String> friends = new ArrayList<>();
         friends.add("friend1@gmail.com");
@@ -67,7 +67,7 @@ public class FriendManagementControllerTest {
     }
 
     @Test
-    @WithMockUser(roles = {"USER", "MODERATOR", "ADMIN"})
+    @WithMockUser(roles = {"MODERATOR", "ADMIN"})
     public void testBlockFriend() throws Exception {
         when(friendService.blockFriend(any(SubscriptionRequest.class))).thenReturn(true);
 
