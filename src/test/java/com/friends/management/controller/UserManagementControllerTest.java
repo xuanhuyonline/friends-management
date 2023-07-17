@@ -37,6 +37,7 @@ public class UserManagementControllerTest {
     private JwtUtils jwtUtils;
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     public void testFindFriendByEmail() throws Exception {
         String email = "test@gmail.com";
         List<String> friends = new ArrayList<>();
@@ -86,6 +87,9 @@ public class UserManagementControllerTest {
 
         when(userService.findFriendSubscribedByEmail(sender, text)).thenReturn(recipients);
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/users/subscribed").param("sender", sender).param("text", text)).andExpect(MockMvcResultMatchers.status().isOk()).andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true)).andExpect(MockMvcResultMatchers.jsonPath("$.recipients").value(recipients));
+        mockMvc.perform(MockMvcRequestBuilders.get("/users/subscribed").param("sender", sender).param("text", text))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.success").value(true))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.recipients").value(recipients));
     }
 }

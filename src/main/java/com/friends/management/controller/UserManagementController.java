@@ -1,7 +1,7 @@
 package com.friends.management.controller;
 
-import com.friends.management.common.EmailRecipientsResponse;
-import com.friends.management.common.FriendsListResponse;
+import com.friends.management.response.EmailRecipientsResponse;
+import com.friends.management.response.FriendsListResponse;
 import com.friends.management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +16,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserManagementController {
     private final UserService userService;
-
     @GetMapping
     public FriendsListResponse findFriendByEmail(@RequestParam("email") String email) {
         List<String> friends = userService.findFriendByEmail(email);

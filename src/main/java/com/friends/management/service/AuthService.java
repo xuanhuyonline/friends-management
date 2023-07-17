@@ -1,6 +1,6 @@
 package com.friends.management.service;
 
-import com.friends.management.common.JwtResponse;
+import com.friends.management.response.JwtResponse;
 import com.friends.management.dto.LoginRequest;
 import com.friends.management.dto.SignUpRequest;
 

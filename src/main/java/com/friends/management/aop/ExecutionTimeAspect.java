@@ -1,4 +1,4 @@
-package com.friends.management.aspect;
+package com.friends.management.aop;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
