@@ -1,4 +1,4 @@
-package com.friends.management.dto;
+package com.friends.management.entity;
 
 public enum RoleEnum {
     ROLE_USER,

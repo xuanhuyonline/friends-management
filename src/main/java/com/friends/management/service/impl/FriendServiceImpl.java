@@ -1,7 +1,7 @@
 package com.friends.management.service.impl;
 
-import com.friends.management.dto.FriendStatus;
-import com.friends.management.dto.SubscriptionRequest;
+import com.friends.management.entity.FriendStatus;
+import com.friends.management.dto.request.SubscriptionRequest;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
@@ -30,6 +30,10 @@ public class FriendServiceImpl implements FriendService {
     public Boolean createFriendConnection(List<String> friends) {
         if (friends.size() != 2) {
             throw new ApplicationException("Exactly two email addresses are required", HttpStatus.BAD_REQUEST.value());
+        }
+
+        if (friends.get(0).isEmpty() ||  friends.get(1).isEmpty()) {
+            throw new ApplicationException("Email cannot be empty", HttpStatus.BAD_REQUEST.value());
         }
 
         if (!isValidEmail(friends.get(0)) || !isValidEmail(friends.get(1))) {

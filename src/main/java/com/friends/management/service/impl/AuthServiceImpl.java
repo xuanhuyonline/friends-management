@@ -2,10 +2,10 @@ package com.friends.management.service.impl;
 
 import com.friends.management.aop.AuditLog;
 import com.friends.management.aop.LogExecutionTime;
-import com.friends.management.response.JwtResponse;
-import com.friends.management.dto.LoginRequest;
-import com.friends.management.dto.RoleEnum;
-import com.friends.management.dto.SignUpRequest;
+import com.friends.management.dto.response.JwtResponse;
+import com.friends.management.dto.request.LoginRequest;
+import com.friends.management.entity.RoleEnum;
+import com.friends.management.dto.request.SignUpRequest;
 import com.friends.management.entity.Role;
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;

@@ -1,4 +1,4 @@
-package com.friends.management.response;
+package com.friends.management.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
@@ -9,8 +9,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class FriendsListResponse {
+public class EmailRecipientsResponse {
     private boolean success;
-    private List<String> friends;
-    private Integer count;
+    private List<String> recipients;
 }

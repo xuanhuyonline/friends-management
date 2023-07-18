@@ -1,7 +1,7 @@
 package com.friends.management.controller;
 
-import com.friends.management.response.EmailRecipientsResponse;
-import com.friends.management.response.FriendsListResponse;
+import com.friends.management.dto.response.EmailRecipientsResponse;
+import com.friends.management.dto.response.FriendsListResponse;
 import com.friends.management.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

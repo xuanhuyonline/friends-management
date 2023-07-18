@@ -1,12 +1,16 @@
-package com.friends.management.response;
+package com.friends.management.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+import java.util.List;
+
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class SuccessResponse {
+public class FriendsListResponse {
     private boolean success;
+    private List<String> friends;
+    private Integer count;
 }
