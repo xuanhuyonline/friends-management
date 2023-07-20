@@ -1,9 +1,9 @@
 package com.friends.management.controller;
 
-import com.friends.management.response.JwtResponse;
-import com.friends.management.response.SuccessResponse;
-import com.friends.management.dto.LoginRequest;
-import com.friends.management.dto.SignUpRequest;
+import com.friends.management.dto.response.JwtResponse;
+import com.friends.management.dto.response.SuccessResponse;
+import com.friends.management.dto.request.LoginRequest;
+import com.friends.management.dto.request.SignUpRequest;
 import com.friends.management.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;

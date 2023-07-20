@@ -1,9 +1,9 @@
 package com.friends.management.service;
 
-import com.friends.management.response.JwtResponse;
-import com.friends.management.dto.LoginRequest;
-import com.friends.management.dto.RoleEnum;
-import com.friends.management.dto.SignUpRequest;
+import com.friends.management.dto.response.JwtResponse;
+import com.friends.management.dto.request.LoginRequest;
+import com.friends.management.entity.RoleEnum;
+import com.friends.management.dto.request.SignUpRequest;
 import com.friends.management.entity.Role;
 import com.friends.management.entity.User;
 import com.friends.management.exception.ApplicationException;
@@ -11,48 +11,44 @@ import com.friends.management.repository.RoleRepository;
 import com.friends.management.repository.UserRepository;
 import com.friends.management.security.jwt.JwtUtils;
 import com.friends.management.security.service.UserDetailsImpl;
-import com.friends.management.service.impl.AuthServiceImpl;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.*;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AuthServiceTest {
-    @Mock
+    @MockBean
     private UserRepository userRepository;
 
-    @Mock
+    @MockBean
     private RoleRepository roleRepository;
 
-    @InjectMocks
-    private AuthServiceImpl authService;
+    @Autowired
+    private AuthService authService;
 
-    @Mock
+    @MockBean
     private PasswordEncoder encoder;
 
-    @Mock
+    @MockBean
     private AuthenticationManager authenticationManager;
 
-    @Mock
+    @MockBean
     private JwtUtils jwtUtils;
-
-    @BeforeEach
-    public void setup() {
-        MockitoAnnotations.openMocks(this);
-    }
 
     @Test
     public void testRegister_ValidUser() {
@@ -67,8 +63,6 @@ public class AuthServiceTest {
 
         Mockito.when(userRepository.existsByUsername(signUpRequest.getUsername())).thenReturn(false);
         Mockito.when(userRepository.existsByEmail(signUpRequest.getEmail())).thenReturn(false);
-
-        Set<String> asignRoles = signUpRequest.getRole();
 
         Optional<Role> roleAdmin = Optional.of(new Role());
         roleAdmin.get().setName(RoleEnum.ROLE_ADMIN.getRole());

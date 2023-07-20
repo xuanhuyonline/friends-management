@@ -1,6 +1,6 @@
 package com.friends.management.repository;
 
-import com.friends.management.dto.FriendStatus;
+import com.friends.management.entity.FriendStatus;
 import com.friends.management.entity.Friend;
 import com.friends.management.entity.User;
 import org.junit.jupiter.api.Assertions;

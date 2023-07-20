@@ -1,17 +1,20 @@
 package com.friends.management.controller;
 
-import com.friends.management.response.JwtResponse;
-import com.friends.management.dto.LoginRequest;
-import com.friends.management.dto.SignUpRequest;
+import com.friends.management.dto.response.JwtResponse;
+import com.friends.management.dto.request.LoginRequest;
+import com.friends.management.dto.request.SignUpRequest;
 import com.friends.management.security.jwt.AuthenticationEntryPointHandler;
 import com.friends.management.security.jwt.JwtUtils;
 import com.friends.management.security.service.UserDetailsServiceImpl;
 import com.friends.management.service.AuthService;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
@@ -22,7 +25,9 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@WebMvcTest(AuthManagementController.class)
+@ExtendWith(SpringExtension.class)
+@SpringBootTest
+@AutoConfigureMockMvc
 public class AuthManagementControllerTest {
     @Autowired
     private MockMvc mockMvc;

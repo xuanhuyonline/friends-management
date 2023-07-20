@@ -1,6 +1,6 @@
 package com.friends.management.repository;
 
-import com.friends.management.dto.RoleEnum;
+import com.friends.management.entity.RoleEnum;
 import com.friends.management.entity.Role;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

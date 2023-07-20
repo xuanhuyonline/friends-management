@@ -1,15 +1,12 @@
-package com.friends.management.response;
+package com.friends.management.dto.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.util.List;
-
 @Getter
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class EmailRecipientsResponse {
+public class SuccessResponse {
     private boolean success;
-    private List<String> recipients;
 }

@@ -1,7 +1,6 @@
 package com.friends.management.entity;
 
 
-import com.friends.management.dto.FriendStatus;
 import lombok.*;
 
 import javax.persistence.*;

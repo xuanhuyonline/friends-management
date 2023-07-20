@@ -45,7 +45,7 @@ docker-compose up -d
 https://www.postman.com/downloads/
 ```
 
-### RestApi Enpoints
+### RestApi Endpoints
 
 * Create a friend connection :POST http://localhost:8080/api/v1/friends
 

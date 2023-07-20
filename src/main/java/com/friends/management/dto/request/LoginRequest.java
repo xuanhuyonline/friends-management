@@ -1,4 +1,4 @@
-package com.friends.management.dto;
+package com.friends.management.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
